@@ -1,0 +1,4 @@
+# HTTP client
+requests==2.24.0
+curlify==2.2.1
+

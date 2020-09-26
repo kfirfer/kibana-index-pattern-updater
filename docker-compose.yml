@@ -1,0 +1,12 @@
+version: '3.7'
+
+services:
+  application:
+    image: kibana-index-pattern-updater:latest
+    container_name: kibana-index-pattern-updater
+    build:
+      context: .
+      cache_from:
+        - kibana-index-pattern-updater:latest
+    env_file:
+      - .env
