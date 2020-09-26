@@ -17,5 +17,6 @@ services: server.services ## Start main services
 logs: server.logs  ## Display server logs
 
 include attachments/makefiles/server.mk
+include attachments/makefiles/docker.mk
 include attachments/makefiles/help.mk
 
