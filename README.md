@@ -1,0 +1,1 @@
+# kibana-index-pattern-updater
