@@ -15,7 +15,7 @@ def get_namespaces():
     headers = {
         'authorization': 'Bearer {}'.format(KUBERNETES_TOKEN)
     }
-    response = requests.request("GET", url, headers=headers, verify=False).json()
+    response = requests.request("GET", url, headers=headers, verify=False, timeout=60).json()
     return response
 
 
@@ -33,7 +33,7 @@ def create_index_patterns(namespace):
         'Authorization': 'Basic {}'.format(KIBANA_AUTH),
         'Content-Type': 'application/json'
     }
-    response = requests.request("POST", url, headers=headers, json=payload)
+    response = requests.request("POST", url, headers=headers, json=payload, timeout=60)
     print(response.text.encode('utf8'))
 
 
@@ -43,7 +43,7 @@ def is_index_pattern_exists(namespace):
         'kbn-xsrf': 'anything',
         'Authorization': 'Basic {}'.format(KIBANA_AUTH)
     }
-    response = requests.request("GET", url, headers=headers)
+    response = requests.request("GET", url, headers=headers, timeout=60)
     if response.status_code == 404:
         return False
     return True
