@@ -8,6 +8,7 @@ src.loggings.init(custom_formatter=CustomJSONLog)
 
 if __name__ == '__main__':
     from src.job.updater import job
+
     try:
         job()
     except Exception:

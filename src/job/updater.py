@@ -42,7 +42,7 @@ def create_index_patterns(namespace):
         'Content-Type': 'application/json'
     }
     response = requests.request("POST", url, headers=headers, json=payload, timeout=60)
-    log.info(response=response.text.encode('utf8'))
+    log.info("", extra={"props": {"response": response.text}})
 
 
 def is_index_pattern_exists(namespace):
@@ -83,8 +83,8 @@ def create_space(namespace):
         'kbn-xsrf': 'anything',
         'Authorization': 'Basic {}'.format(KIBANA_AUTH)
     }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    log.info(response=response.text)
+    response = requests.request("POST", url, headers=headers, json=payload, timeout=60, verify=False)
+    log.info("", extra={"props": {"response": response.text}})
 
 
 def create_role(namespace):
@@ -142,8 +142,8 @@ def create_role(namespace):
         'kbn-xsrf': 'anything',
         'Authorization': 'Basic {}'.format(KIBANA_AUTH)
     }
-    response = requests.request("PUT", url, headers=headers, data=payload)
-    log.info(response=response.text)
+    response = requests.request("PUT", url, headers=headers, json=payload, timeout=60, verify=False)
+    log.info("", extra={"props": {"response": response.text}})
 
 
 def create_user(namespace):
@@ -161,9 +161,9 @@ def create_user(namespace):
         'kbn-xsrf': 'anything',
         'Authorization': 'Basic {}'.format(KIBANA_AUTH)
     }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    log.info(response=response.text)
-    log.info(username=namespace, password=password)
+    response = requests.request("POST", url, headers=headers, json=payload, timeout=60, verify=False)
+    log.info("", extra={"props": {"response": response.text}})
+    log.info("", extra={"props": {"username": namespace, "password": password}})
 
 
 def create_space_index_pattern(namespace):
@@ -178,8 +178,8 @@ def create_space_index_pattern(namespace):
         'kbn-xsrf': 'anything',
         'Authorization': 'Basic {}'.format(KIBANA_AUTH)
     }
-    response = requests.request("POST", url, headers=headers, data=payload)
-    log.info(response=response.text)
+    response = requests.request("POST", url, headers=headers, json=payload, timeout=60, verify=False)
+    log.info("", extra={"props": {"response": response.text}})
 
 
 def random_string(size=20):
