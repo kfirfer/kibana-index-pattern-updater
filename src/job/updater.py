@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import base64
+import os
 import random
 import string
 
@@ -7,7 +8,7 @@ import requests
 from kubernetes import client, config
 
 from src import KIBANA_HOST, KIBANA_USERNAME, KIBANA_PASSWORD, LOAD_KUBECONFIG, LOAD_INCLUSTER_CONFIG, \
-    ELASTICSEARCH_HOST, DOMAIN
+    ELASTICSEARCH_HOST, DOMAIN, ES_VERSION
 from src.loggings.logger import logger
 
 KIBANA_AUTH = "{}:{}".format(KIBANA_USERNAME, KIBANA_PASSWORD)
@@ -15,6 +16,11 @@ message_bytes = KIBANA_AUTH.encode('ascii')
 base64_bytes = base64.b64encode(message_bytes)
 KIBANA_AUTH = base64_bytes.decode('ascii')
 log = logger(__name__)
+exclude_namespaces_set = set()
+
+if 'EXCLUDE_NAMESPACES' in os.environ and os.environ["EXCLUDE_NAMESPACES"] != "":
+    EXCLUDE_NAMESPACES = os.environ['EXCLUDE_NAMESPACES']
+    exclude_namespaces_set = set(EXCLUDE_NAMESPACES.split(","))
 
 
 def get_namespaces():
@@ -187,6 +193,24 @@ def random_string(size=20):
     return ''.join(random.choice(chars) for _ in range(size))
 
 
+def config_space_default_index_pattern(namespace):
+    url = "{}/s/{}/spaces/enter".format(KIBANA_HOST, namespace)
+    headers = {
+        'kbn-xsrf': 'anything',
+        'Authorization': 'Basic {}'.format(KIBANA_AUTH)
+    }
+    requests.request("GET", url, headers=headers, timeout=60, verify=False)
+
+    payload = {
+        "attributes": {
+            "defaultIndex": "logstash-{}-*".format(namespace)
+        }
+    }
+    url = "{}/s/{}/api/saved_objects/config/{}".format(KIBANA_HOST, namespace, ES_VERSION)
+    response = requests.request("PUT", url, headers=headers, json=payload, timeout=60, verify=False)
+    log.info("", extra={"props": {"response": response.text}})
+
+
 def job():
     namespaces = get_namespaces()
     for item in namespaces.items:
@@ -194,7 +218,10 @@ def job():
         index_pattern_exists = is_index_pattern_exists(namespace)
         if index_pattern_exists is False:
             create_index_patterns(namespace)
+            if namespace in exclude_namespaces_set:
+                continue
             create_space(namespace)
             create_role(namespace)
             create_user(namespace)
             create_space_index_pattern(namespace)
+            config_space_default_index_pattern(namespace)
