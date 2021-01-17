@@ -107,7 +107,7 @@ def create_role(namespace):
                         "logstash-{}-*".format(namespace)
                     ],
                     "privileges": [
-                        "all"
+                        "read"
                     ]
                 }
             ]
@@ -130,9 +130,6 @@ def create_role(namespace):
                     ],
                     "visualize": [
                         "all"
-                    ],
-                    "indexPatterns": [
-                        "read"
                     ],
                     "savedObjectsManagement": [
                         "read"
