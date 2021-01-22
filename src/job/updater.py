@@ -217,8 +217,8 @@ def job():
             create_index_patterns(namespace)
             if namespace in exclude_namespaces_set:
                 continue
-            create_space(namespace)
-            create_role(namespace)
-            create_user(namespace)
-            create_space_index_pattern(namespace)
-            config_space_default_index_pattern(namespace)
+            # create_space(namespace)
+            # create_role(namespace)
+            # create_user(namespace)
+            # create_space_index_pattern(namespace)
+            # config_space_default_index_pattern(namespace)
